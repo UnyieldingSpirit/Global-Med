@@ -243,7 +243,7 @@ export default function DoctorDetail({ doctor }: DoctorDetailProps): React.React
             
               <button 
                onClick={doctor.onAppointmentClick}
-                className="px-8 py-4 rounded-[12px] bg-transparent text-[#23464e] dark:text-white border-2 border-[#23464e] dark:border-white hover:bg-[#00c78b] hover:text-white hover:border-[#00c78b] transition-all duration-300 font-medium w-full md:w-auto"
+                className="px-8 py-4 mt-[20px] rounded-[12px] bg-transparent text-[#23464e] dark:text-white border-2 border-[#23464e] dark:border-white hover:bg-[#00c78b] hover:text-white hover:border-[#00c78b] transition-all duration-300 font-medium w-full md:w-auto"
               >
                 {t('bookAppointment')}
               </button>

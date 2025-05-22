@@ -1,37 +1,66 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import AccountSidebar from "../../shared/components/AccountSidebar";
+import React, { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import LoginHeader from "@/src/shared/layout/AccountHeader/LoginHeader";
 
-export default function AccountLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [isMobile, setIsMobile] = useState(false);
+const AccountSidebar = dynamic(
+  () => import("../../shared/components/AccountSidebar"),
+  {
+    ssr: false,
+  }
+);
 
-    useEffect(() => {
+export default function AccountLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    
+    window.addEventListener("resize", checkIsMobile);
+
     return () => {
-      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener("resize", checkIsMobile);
     };
   }, []);
-  
-  if (pathname === '/account/login') {
+
+  useEffect(() => {
+    if (isClient) {
+      const token = localStorage.getItem("authToken");
+      if (!token && pathname !== "/account/login") {
+        localStorage.clear();
+        sessionStorage.clear();
+        router.push("/account/login");
+      }
+    }
+  }, [isClient, pathname, router]);
+
+  if (pathname === "/account/login") {
     return <>{children}</>;
   }
-  
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div>
       <LoginHeader />
       <div className="flex mt-4">
         {!isMobile && <AccountSidebar />}
-        <main className={`flex-1 ${!isMobile ? 'ml-6' : 'mx-auto w-full'}`}>
+        <main className={`flex-1 ${!isMobile ? "ml-6" : "mx-auto w-full"}`}>
           {children}
         </main>
       </div>

@@ -6,13 +6,12 @@
   --light-bg: #f7f7f7;
   --light-block: #ffffff;
   --light-accent: #00c78b;
-  --light-text: #094A54;
-  
+  --light-text: #094a54;
+
   --dark-bg: #11363c;
   --dark-block: #094a54;
   --dark-accent: #00c78b;
   --dark-text: #ffffff;
-
 }
 
 .light {
@@ -20,7 +19,7 @@
   --block-color: var(--light-block);
   --accent-color: var(--light-accent);
   --text-color: var(--light-text);
-
+  --svg-stroke-color: #26616a;
 }
 
 .dark {
@@ -28,6 +27,7 @@
   --block-color: var(--dark-block);
   --accent-color: var(--dark-accent);
   --text-color: var(--dark-text);
+  --svg-stroke-color: #ffffff;
 }
 
 body {
@@ -36,3 +36,29 @@ body {
   color: var(--text-color);
 }
 
+.amo-button-holder {
+  right: 37px !important;
+  bottom: 32px !important;
+}
+
+@media (max-width: 500px) {
+  .amo-button-holder {
+    right: 30px !important;
+  }
+}
+
+.noFill {
+  fill: none !important;
+
+  &:hover {
+    fill: none !important;
+  }
+}
+
+.svgCustomColorStroke {
+  stroke: var(--svg-stroke-color) !important;
+}
+
+svg {
+  max-width: 100%;
+}

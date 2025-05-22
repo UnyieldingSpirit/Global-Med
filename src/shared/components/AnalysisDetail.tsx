@@ -182,7 +182,7 @@ const AnalysisDetail: React.FC<AnalysisDetailProps> = ({ params }) => {
         {/* Контентная часть баннера */}
         <div className="relative z-10 p-6 sm:p-8 md:p-10 text-white">
           <h1 className="text-2xl sm:text-3xl md:text-[56px] font-medium mb-3 md:mb-6">
-            Анализы: {analysisData.title}
+            {analysisData.title}
           </h1>
           
           <p className="text-base sm:text-lg max-w-3xl mb-6 md:mb-6">
