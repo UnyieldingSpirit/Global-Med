@@ -11,6 +11,7 @@ export interface DoctorCardProps {
   buttonText: string;
   isActive?: boolean;
   className?: string;
+  link?:string
 }
 
 export const DoctorCard: React.FC<DoctorCardProps> = ({
@@ -21,6 +22,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
   buttonText,
   isActive = false,
   className = '',
+  link
 }) => {
   const { theme } = useThemeStore();
   const [isButtonHovered, setIsButtonHovered] = useState(false);
@@ -52,7 +54,7 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({
       
       {/* Button with its own hover state */}
       <Link 
-        href={`/doctors/${id}`} 
+        href={`/clinic/doctors/${link}`} 
         className={`
           mt-auto w-full py-4 px-6 rounded-xl text-center transition-all duration-300
           ${isActive 

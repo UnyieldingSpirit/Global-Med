@@ -1,89 +1,96 @@
-import { create } from 'zustand';
-import { Doctor, DoctorFilters } from '../app/api/doctors';
-import httpClient from '@/src/shared/services/HttpClient';
+import { create } from "zustand";
+import { Doctor, DoctorFilters } from "../app/api/doctors";
+import httpClient from "@/src/shared/services/HttpClient";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
-// Обновляем функцию getDoctors, если она используется
 export const getDoctors = async (filters: DoctorFilters, page = 1) => {
-    const queryParams = new URLSearchParams();
+  const queryParams = new URLSearchParams();
 
-    // Добавляем все фильтры как query параметры
-    Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-            queryParams.append(key, String(value));
-        }
-    });
+  // Add filter parameters in the format filter[key]=value
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      queryParams.append(`filter[${key}]`, String(value));
+    }
+  });
 
-    // Добавляем номер страницы
-    queryParams.append('page', String(page));
+  // Add page parameter
+  queryParams.append("page", String(page));
 
-    const response = await httpClient.get<any>(`/doctors?${queryParams.toString()}`);
-    return response;
+  const response = await httpClient.get<any>(
+    `/doctors?${queryParams.toString()}`
+  );
+  return response;
 };
 
 interface DoctorsState {
-    // Состояние данных
-    doctors: Doctor[];
-    loading: boolean;
-    error: string | null;
-
-    // Фильтры поиска
-    filters: DoctorFilters;
-
-    // Пагинация
-    currentPage: number;
-    totalPages: number;
-    totalDoctors: number;
-
-    // Методы
-    setFilters: (filters: DoctorFilters) => void;
-    setPage: (page: number) => void;
-    fetchDoctors: () => Promise<void>;
-    clearResults: () => void;
+  doctors: Doctor[];
+  loading: boolean;
+  error: string | null;
+  filters: DoctorFilters;
+  totalDoctors: number;
+  setFilters: (filters: DoctorFilters) => void;
+  fetchDoctors: () => Promise<void>;
+  clearResults: () => void;
+  resetStore: () => void;
 }
 
+// Initial state values
+const initialState = {
+  doctors: [],
+  loading: false,
+  error: null,
+  filters: {},
+  totalDoctors: 0,
+};
+
 export const useDoctorsStore = create<DoctorsState>()((set, get) => ({
-    // Начальное состояние
-    doctors: [],
-    loading: false,
-    error: null,
+  ...initialState,
+  setFilters: (filters) => set({ filters }),
+  fetchDoctors: async () => {
+    const { filters } = get();
+    try {
+      set({ loading: true, error: null });
 
-    filters: {},
+      // Fetch first page to get total pages
+      const firstPageResponse = await getDoctors(filters, 1);
+      const firstPageDoctors = firstPageResponse.data;
+      const totalPages = firstPageResponse.meta.last_page;
+      const totalDoctors = firstPageResponse.meta.total;
 
-    currentPage: 1,
-    totalPages: 1,
-    totalDoctors: 0,
+      if (totalPages === 1) {
+        set({
+          doctors: firstPageDoctors,
+          totalDoctors,
+          loading: false,
+        });
+        return;
+      }
 
-    // Установка фильтров поиска
-    setFilters: (filters) => set({ filters, currentPage: 1 }),
+      // Fetch remaining pages concurrently
+      const pagePromises = [];
+      for (let page = 2; page <= totalPages; page++) {
+        pagePromises.push(getDoctors(filters, page));
+      }
+      const remainingResponses = await Promise.all(pagePromises);
+      const remainingDoctors = remainingResponses.flatMap(
+        (response) => response.data
+      );
+      const allDoctors = [...firstPageDoctors, ...remainingDoctors];
 
-    // Изменение страницы для пагинации
-    setPage: (page) => set({ currentPage: page }),
-
-    // Очистка результатов
-    clearResults: () => set({ doctors: [], error: null }),
-
-    // Основной метод для получения данных
-    fetchDoctors: async () => {
-        const { filters, currentPage } = get();
-
-        try {
-            set({ loading: true, error: null });
-
-            const response = await getDoctors(filters, currentPage);
-
-            set({
-                doctors: response.data,
-                currentPage: response.meta.current_page,
-                totalPages: response.meta.last_page,
-                totalDoctors: response.meta.total,
-                loading: false
-            });
-        } catch (error) {
-            console.error('Error fetching doctors:', error);
-            set({
-                error: 'Ошибка при загрузке данных',
-                loading: false
-            });
-        }
+      set({
+        doctors: allDoctors,
+        totalDoctors,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+      set({
+        error: "Ошибка при загрузке данных",
+        loading: false,
+      });
     }
+  },
+  clearResults: () => set({ doctors: [], error: null }),
+  resetStore: () => set(initialState),
 }));

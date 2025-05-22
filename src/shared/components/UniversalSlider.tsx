@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
-import { useThemeStore } from '@/src/store/theme';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import type { SwiperOptions } from 'swiper/types';
+import React, { useState, useEffect, useRef, ReactNode } from "react";
+import { useThemeStore } from "@/src/store/theme";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import type { SwiperOptions } from "swiper/types";
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 export interface UniversalSliderProps {
   slides: ReactNode[];
@@ -75,71 +75,75 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
   onInit,
 }) => {
   const { theme } = useThemeStore();
-  
+
   const prevButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-  
+
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [activeSlidePerView, setActiveSlidePerView] = useState<number>(
-    typeof window !== 'undefined' && window.innerWidth < mobileBreakpoint 
-      ? slidesPerMobileView 
+    typeof window !== "undefined" && window.innerWidth < mobileBreakpoint
+      ? slidesPerMobileView
       : slidesPerView
   );
-  
+
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < mobileBreakpoint;
       setIsMobile(mobile);
       setActiveSlidePerView(mobile ? slidesPerMobileView : slidesPerView);
     };
-    
+
     handleResize();
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [mobileBreakpoint, slidesPerMobileView, slidesPerView]);
-  
+
   const handleSlideChange = (swiper: any) => {
     const currentScrollPosition = window.scrollY;
-    
+
     if (onSlideChange) {
       onSlideChange(swiper.activeIndex);
     }
-    
+
     setTimeout(() => {
       window.scrollTo({
         top: currentScrollPosition,
-        behavior: 'auto'
+        behavior: "auto",
       });
     }, 50);
   };
-  
+
   const renderHeader = () => {
     if (!title && !description) return null;
-    
+
     return (
       <div className={`${wrapperClassName} mb-6`}>
-        <div className={`flex flex-col ${isMobile ? 'space-y-4' : 'md:flex-row justify-between'}`}>
+        <div
+          className={`flex flex-col ${
+            isMobile ? "space-y-4" : "md:flex-row justify-between"
+          }`}
+        >
           {title && (
-            <div className={`${isMobile ? 'w-full' : 'md:w-1/2'} mb-4 md:mb-0`}>
-              {typeof title === 'string' ? (
+            <div className={`${isMobile ? "w-full" : "md:w-1/2"} mb-4 md:mb-0`}>
+              {typeof title === "string" ? (
                 <h2 className={titleClassName}>{title}</h2>
               ) : (
                 title
               )}
             </div>
           )}
-          
+
           {description && (
-            <div className={`${isMobile ? 'w-full' : 'md:w-1/2'}`}>
-              {typeof description === 'string' ? (
+            <div className={`${isMobile ? "w-full" : "md:w-1/2"}`}>
+              {typeof description === "string" ? (
                 <p className={descriptionClassName}>{description}</p>
               ) : (
                 description
               )}
-              
+
               {showNavigation && !customPrevButton && !customNextButton && (
                 <div className="flex items-center gap-2 mt-4">
                   <button
@@ -147,37 +151,37 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
                     className="w-12 h-12 rounded-lg border border-black dark:border-white bg-transparent flex items-center justify-center transition-all swiper-button-prev-custom hover:bg-light-accent hover:border-light-accent group"
                     aria-label={navigationPrevLabel}
                   >
-                    <svg 
-                      className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white" 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white"
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="2" 
-                        d="M15 19l-7-7 7-7" 
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 19l-7-7 7-7"
                       />
                     </svg>
                   </button>
-                  
+
                   <button
                     ref={nextButtonRef}
                     className="w-12 h-12 rounded-lg border border-black dark:border-white bg-transparent flex items-center justify-center transition-all swiper-button-next-custom hover:bg-light-accent hover:border-light-accent group"
                     aria-label={navigationNextLabel}
                   >
-                    <svg 
-                      className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white" 
-                      fill="none" 
-                      stroke="currentColor" 
+                    <svg
+                      className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white"
+                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="2" 
-                        d="M9 5l7 7-7 7" 
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
                       />
                     </svg>
                   </button>
@@ -189,67 +193,71 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
       </div>
     );
   };
-  
+
   const renderNavigation = () => {
-    if (!showNavigation || (description && !customPrevButton && !customNextButton)) return null;
+    if (
+      !showNavigation ||
+      (description && !customPrevButton && !customNextButton)
+    )
+      return null;
 
     return (
       <div className="flex items-center gap-2 mb-6">
         {customPrevButton ? (
-          React.cloneElement(
-            customPrevButton as React.ReactElement<any>, 
-            { 
-              ref: prevButtonRef as React.Ref<any>,
-              className: `swiper-button-prev-custom ${(customPrevButton as React.ReactElement<any>).props.className || ''}` 
-            }
-          )
+          React.cloneElement(customPrevButton as React.ReactElement<any>, {
+            ref: prevButtonRef as React.Ref<any>,
+            className: `swiper-button-prev-custom ${
+              (customPrevButton as React.ReactElement<any>).props.className ||
+              ""
+            }`,
+          })
         ) : (
           <button
             ref={prevButtonRef}
             className="w-12 h-12 rounded-lg border border-black dark:border-white bg-transparent flex items-center justify-center transition-all swiper-button-prev-custom hover:bg-light-accent hover:border-light-accent group"
             aria-label={navigationPrevLabel}
           >
-            <svg 
-              className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth="2" 
-                d="M15 19l-7-7 7-7" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
               />
             </svg>
           </button>
         )}
-        
+
         {customNextButton ? (
-          React.cloneElement(
-            customNextButton as React.ReactElement<any>, 
-            { 
-              ref: nextButtonRef as React.Ref<any>,
-              className: `swiper-button-next-custom ${(customNextButton as React.ReactElement<any>).props.className || ''}` 
-            }
-          )
+          React.cloneElement(customNextButton as React.ReactElement<any>, {
+            ref: nextButtonRef as React.Ref<any>,
+            className: `swiper-button-next-custom ${
+              (customNextButton as React.ReactElement<any>).props.className ||
+              ""
+            }`,
+          })
         ) : (
           <button
             ref={nextButtonRef}
             className="w-12 h-12 rounded-lg border border-black dark:border-white bg-transparent flex items-center justify-center transition-all swiper-button-next-custom hover:bg-light-accent hover:border-light-accent group"
             aria-label={navigationNextLabel}
           >
-            <svg 
-              className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-6 h-6 text-black dark:text-white transition-colors group-hover:text-white"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth="2" 
-                d="M9 5l7 7-7 7" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
               />
             </svg>
           </button>
@@ -257,42 +265,53 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
       </div>
     );
   };
-  
+
   if (!slides || slides.length === 0) {
     return null;
   }
-  
+
   // Формируем объект с брейкпоинтами для Swiper с правильной типизацией
   const customBreakpoints: { [key: number]: SwiperOptions } = {};
-  
+
   if (slidesPerView768) {
     customBreakpoints[768] = { slidesPerView: slidesPerView768, spaceBetween };
   }
-  
+
   if (slidesPerView1024) {
-    customBreakpoints[1024] = { slidesPerView: slidesPerView1024, spaceBetween };
+    customBreakpoints[1024] = {
+      slidesPerView: slidesPerView1024,
+      spaceBetween,
+    };
   }
-  
+
   if (slidesPerView1280) {
-    customBreakpoints[1280] = { slidesPerView: slidesPerView1280, spaceBetween };
+    customBreakpoints[1280] = {
+      slidesPerView: slidesPerView1280,
+      spaceBetween,
+    };
   }
-  
+
   if (slidesPerView1536) {
-    customBreakpoints[1536] = { slidesPerView: slidesPerView1536, spaceBetween };
+    customBreakpoints[1536] = {
+      slidesPerView: slidesPerView1536,
+      spaceBetween,
+    };
   }
-  
+
   if (mobileBreakpoint) {
     customBreakpoints[mobileBreakpoint] = { slidesPerView, spaceBetween };
   }
 
   // Объединяем с переданными брейкпоинтами, если они есть
-  const finalBreakpoints = breakpoints ? { ...customBreakpoints, ...breakpoints } : customBreakpoints;
-  
+  const finalBreakpoints = breakpoints
+    ? { ...customBreakpoints, ...breakpoints }
+    : customBreakpoints;
+
   return (
     <div className={`w-full ${className} mb-6 sm:mb-8 md:mb-40`}>
       {renderHeader()}
       {renderNavigation()}
-      
+
       <div className="relative">
         <Swiper
           modules={[Navigation, Pagination]}
@@ -305,22 +324,34 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
           onSlideChange={handleSlideChange}
           watchSlidesProgress={true}
           preventInteractionOnTransition={true}
-          navigation={showNavigation ? {
-            prevEl: '.swiper-button-prev-custom',
-            nextEl: '.swiper-button-next-custom',
-          } : false}
-          pagination={showPagination ? {
-            clickable: true,
-            el: `.${paginationClassName}`,
-            bulletClass: `${paginationClassName}-bullet`,
-            bulletActiveClass: `${paginationClassName}-bullet-active`,
-          } : false}
+          navigation={
+            showNavigation
+              ? {
+                  prevEl: ".swiper-button-prev-custom",
+                  nextEl: ".swiper-button-next-custom",
+                }
+              : false
+          }
+          pagination={
+            showPagination
+              ? {
+                  clickable: true,
+                  el: `.${paginationClassName}`,
+                  bulletClass: `${paginationClassName}-bullet`,
+                  bulletActiveClass: `${paginationClassName}-bullet-active`,
+                }
+              : false
+          }
           onBeforeInit={(swiper) => {
-            if (showNavigation && typeof swiper.params.navigation !== 'boolean' && swiper.params.navigation) {
+            if (
+              showNavigation &&
+              typeof swiper.params.navigation !== "boolean" &&
+              swiper.params.navigation
+            ) {
               swiper.params.navigation.prevEl = prevButtonRef.current;
               swiper.params.navigation.nextEl = nextButtonRef.current;
             }
-            
+
             if (onInit) {
               onInit(swiper);
             }
@@ -328,17 +359,22 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
           className="universal-slider"
         >
           {slides.map((slide, index) => (
-            <SwiperSlide key={index} className={`universal-slide ${slideClassName}`}>
+            <SwiperSlide
+              key={index}
+              className={`universal-slide ${slideClassName}`}
+            >
               {slide}
             </SwiperSlide>
           ))}
         </Swiper>
-        
+
         {showPagination && (
-          <div className={`${paginationClassName} flex justify-center space-x-2 mt-4`}></div>
+          <div
+            className={`${paginationClassName} flex justify-center space-x-2 mt-4`}
+          ></div>
         )}
       </div>
-      
+
       <style jsx global>{`
         .universal-slider {
           width: 100%;
@@ -347,24 +383,24 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
           position: relative;
           z-index: 1;
         }
-        
+
         .swiper-slide {
           height: auto;
           backface-visibility: hidden;
           transform: translateZ(0);
           will-change: transform;
         }
-        
+
         .swiper-wrapper {
           display: flex;
           align-items: stretch;
           transition-timing-function: ease-out;
         }
-        
+
         .swiper-container {
           touch-action: pan-y;
         }
-        
+
         .${paginationClassName}-bullet {
           width: 8px;
           height: 8px;
@@ -376,27 +412,27 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
           cursor: pointer;
           transition: all 0.3s ease;
         }
-        
+
         .${paginationClassName}-bullet-active {
           opacity: 1;
           background: var(--light-accent);
           width: 10px;
           height: 10px;
         }
-        
+
         .swiper-button-prev-custom.swiper-button-disabled,
         .swiper-button-next-custom.swiper-button-disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
-        
+
         .swiper-button-prev-custom,
         .swiper-button-next-custom {
           background-color: transparent !important;
           border: 1px solid #000 !important;
           transition: all 0.3s ease;
         }
-        
+
         .dark .swiper-button-prev-custom,
         .dark .swiper-button-next-custom {
           border-color: #fff !important;
@@ -406,18 +442,18 @@ export const UniversalSlider: React.FC<UniversalSliderProps> = ({
         .swiper-button-next-custom svg {
           color: #000 !important;
         }
-        
+
         .dark .swiper-button-prev-custom svg,
         .dark .swiper-button-next-custom svg {
           color: #fff !important;
         }
-        
+
         .swiper-button-prev-custom:hover,
         .swiper-button-next-custom:hover {
           background-color: var(--light-accent) !important;
           border-color: var(--light-accent) !important;
         }
-        
+
         .swiper-button-prev-custom:hover svg,
         .swiper-button-next-custom:hover svg {
           color: white !important;

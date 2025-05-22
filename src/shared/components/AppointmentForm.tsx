@@ -262,7 +262,7 @@ export const AppointmentForm = forwardRef<any, AppointmentFormProps>(({
             onBlur={handleBlur}
           />
           <label htmlFor="appointment-consent" className="ml-3 text-base md:text-lg text-gray-500 dark:text-gray-400">
-            {'Соглашаюсь с политикой в отношении обработки персональных данных'}
+          {t('modal.consentText')}
           </label>
         </div>
         {formErrors.consent && (
